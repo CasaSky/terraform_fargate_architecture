@@ -117,8 +117,9 @@ resource "aws_default_security_group" "sg" {
 }
 
 resource "aws_security_group" "sg_earthws_fg" {
-  vpc_id = aws_vpc.vpc_main.id
-  description        = "fargate sg"
+  vpc_id      = aws_vpc.vpc_main.id
+  name        = "earthws-fg-sg"
+  description = "fargate sg"
 
   ingress {
     cidr_blocks      = ["0.0.0.0/0"]
@@ -148,8 +149,9 @@ resource "aws_security_group" "sg_earthws_fg" {
 }
 
 resource "aws_security_group" "sg_earthws_fg_alb" {
-  vpc_id = aws_vpc.vpc_main.id
-  description        = "sg for alb"
+  vpc_id      = aws_vpc.vpc_main.id
+  name        = "earthws-fg-alb-sg"
+  description = "sg for alb"
 
   ingress {
     cidr_blocks      = ["0.0.0.0/0"]
@@ -173,5 +175,28 @@ resource "aws_security_group" "sg_earthws_fg_alb" {
     protocol         = "-1"
     self             = false
     to_port          = 0
+  }
+}
+
+resource "aws_security_group" "sg_template_rds" {
+  vpc_id      = aws_vpc.vpc_main.id
+  name        = "template-db-sg"
+  description = "allow public psql"
+
+  ingress {
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port        = 5432
+    protocol         = "tcp"
+    to_port          = 5432
+  }
+
+  egress {
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port        = 5432
+    protocol         = "tcp"
+    self             = false
+    to_port          = 5432
   }
 }
