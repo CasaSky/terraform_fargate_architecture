@@ -9,4 +9,5 @@ terraform import aws_route_table.rt_vpc_main rtb-484a7c22
 terraform import aws_internet_gateway.gw_vpc_main igw-33f14258
 terraform import aws_default_network_acl.acl_vpc_main acl-e2206988
 terraform import aws_default_security_group.sg sg-ef151793
+terraform import aws_security_group.sg_earthws_fg sg-09bb7a7fc282dd76a
 ```
