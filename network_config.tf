@@ -147,3 +147,31 @@ resource "aws_security_group" "sg_earthws_fg" {
   }
 }
 
+resource "aws_security_group" "sg_earthws_fg_alb" {
+  vpc_id = aws_vpc.vpc_main.id
+  description        = "sg for alb"
+
+  ingress {
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port        = 80
+    protocol         = "tcp"
+    to_port          = 80
+  }
+
+  ingress {
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+    from_port        = 443
+    protocol         = "tcp"
+    to_port          = 443
+  }
+
+  egress {
+    cidr_blocks      = ["0.0.0.0/0"]
+    from_port        = 0
+    protocol         = "-1"
+    self             = false
+    to_port          = 0
+  }
+}
