@@ -1,0 +1,1 @@
+This is a terraform project for providing some resources that are necessary to build a base infrastructure for running webservices in the aws cloud.
