@@ -1,5 +1,5 @@
-## in order to import existing aws resources for the first time in the terraform remote state, use the terraform import command for each of the existing resource
-## as result, terraform will adapt the configuration infrastructure code with the state file
+## in order to import existing aws resources for the first time in the terraform remote state, use the terraform import command for each of the existing resources  
+## as a result, terraform will adapt the configuration infrastructure code with the state file
 ```
 terraform import aws_vpc.vpc_main vpc-1309b479
 terraform import aws_subnet.sn_00_eu_central_1a_vpc_main subnet-86a2c6ec
