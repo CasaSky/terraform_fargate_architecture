@@ -146,7 +146,7 @@ resource "aws_lb_listener" "ssl_listener_alb_earthws_fg" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "arn:aws:acm:eu-central-1:182355820400:certificate/a2bc7f64-03a5-42d0-a021-da8210850018"
+  certificate_arn   = module.cert_alb.arn
 
   default_action {
     type             = "forward"
