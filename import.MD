@@ -16,5 +16,5 @@ terraform import aws_lb.alb_earthws_fg arn:aws:elasticloadbalancing:eu-central-1
 terraform import aws_lb_target_group.target_group_alb_earthws_fg arn:aws:elasticloadbalancing:eu-central-1:182355820400:targetgroup/earthws-fg-alb-tg/3917cdae33fb8ec3
 terraform import aws_lb_listener.listener_alb_earthws_fg arn:aws:elasticloadbalancing:eu-central-1:182355820400:listener/app/earthws-fg-alb/0421c17ee9d9b607/07371cc9a5e0e566
 terraform import aws_lb_listener.ssl_listener_alb_earthws_fg arn:aws:elasticloadbalancing:eu-central-1:182355820400:listener/app/earthws-fg-alb/0421c17ee9d9b607/15107090b045f7ba
-terraform import aws_acm_certificate.cert_ssl arn:aws:acm:eu-central-1:182355820400:certificate/a2bc7f64-03a5-42d0-a021-da8210850018
+terraform import module.cert_alb.aws_acm_certificate.cert arn:aws:acm:eu-central-1:182355820400:certificate/a2bc7f64-03a5-42d0-a021-da8210850018
 ```

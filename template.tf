@@ -13,17 +13,21 @@ provider "aws" {
   region  = "eu-central-1"
 }
 
-data "aws_route53_zone" "zone_default" {
-  name         = "casasky.de"
-  private_zone = false
-}
-
 module "network_default" {
   source = "./modules/network/"
   vpc_cidr_block = var.vpc_cidr_block
   sn_00_cidr_block = var.sn_00_cidr_block
   sn_01_cidr_block = var.sn_01_cidr_block
   sn_02_cidr_block = var.sn_02_cidr_block
+}
+
+module "cert_alb" {
+  source = "./modules/cert/"
+  domain_name = "earthws.alb.casasky.de"
+  validation_method = "DNS"
+  tags = {
+    application = "earthws"
+  }
 }
 
 resource "aws_security_group" "sg_earthws_fg" {
@@ -150,44 +154,8 @@ resource "aws_lb_listener" "ssl_listener_alb_earthws_fg" {
   }
 }
 
-resource "aws_acm_certificate" "cert_ssl" {
-  domain_name       = "earthws.alb.casasky.de"
-  validation_method = "DNS"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  tags = {
-    "application" = "earthws"
-  }
-}
-
 # This resource is for additional certificates and does not replace the default certificate on the listener.
 resource "aws_lb_listener_certificate" "listener_cert_ssl" {
   listener_arn    = aws_lb_listener.ssl_listener_alb_earthws_fg.arn
-  certificate_arn = aws_acm_certificate.cert_ssl.arn
-}
-
-# This resource implements a part of the validation workflow. It does not represent a real-world entity in AWS, therefore changing or deleting this resource on its own has no immediate effect.
-resource "aws_acm_certificate_validation" "validation_cert_ssl" {
-  certificate_arn         = aws_acm_certificate.cert_ssl.arn
-  validation_record_fqdns = [for record in aws_route53_record.record_alb_earthws : record.fqdn]
-}
-
-resource "aws_route53_record" "record_alb_earthws" {
-  for_each = {
-  for dvo in aws_acm_certificate.cert_ssl.domain_validation_options : dvo.domain_name => {
-    name   = dvo.resource_record_name
-    record = dvo.resource_record_value
-    type   = dvo.resource_record_type
-  }
-  }
-
-  allow_overwrite = true
-  name            = each.value.name
-  records         = [each.value.record]
-  ttl             = 300
-  type            = each.value.type
-  zone_id         = data.aws_route53_zone.zone_default.zone_id
+  certificate_arn = module.cert_alb.arn
 }
