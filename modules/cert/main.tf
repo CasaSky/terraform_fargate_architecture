@@ -1,8 +1,3 @@
-data "aws_route53_zone" "zone_default" {
-  name         = "casasky.de"
-  private_zone = false
-}
-
 resource "aws_acm_certificate" "cert" {
   domain_name       = var.domain_name
   validation_method = var.validation_method
@@ -34,5 +29,5 @@ resource "aws_route53_record" "record" {
   records         = [each.value.record]
   ttl             = 300
   type            = each.value.type
-  zone_id         = data.aws_route53_zone.zone_default.zone_id
+  zone_id         = var.primary_zone_id
 }

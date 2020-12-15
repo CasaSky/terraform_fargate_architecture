@@ -1,39 +1,39 @@
-resource "aws_vpc" "vpc_main" {
+resource "aws_vpc" "default" {
   cidr_block = var.vpc_cidr_block
 }
 
-resource "aws_subnet" "sn_00_eu_central_1a_vpc_main" {
-  vpc_id = aws_vpc.vpc_main.id
+resource "aws_subnet" "sn_00_euc_1a_default_vpc" {
+  vpc_id = aws_vpc.default.id
   cidr_block = var.sn_00_cidr_block
   map_public_ip_on_launch = true
 }
 
-resource "aws_subnet" "sn_01_eu_central_1b_vpc_main" {
-  vpc_id = aws_vpc.vpc_main.id
+resource "aws_subnet" "sn_01_euc_1b_default_vpc" {
+  vpc_id = aws_vpc.default.id
   cidr_block = var.sn_01_cidr_block
   map_public_ip_on_launch = true
 }
 
-resource "aws_subnet" "sn_02_eu_central_1c_vpc_main" {
-  vpc_id = aws_vpc.vpc_main.id
+resource "aws_subnet" "sn_02_euc_1c_default_vpc" {
+  vpc_id = aws_vpc.default.id
   cidr_block = var.sn_02_cidr_block
   map_public_ip_on_launch = true
 }
 
-resource "aws_route_table" "rt_vpc_main" {
-  vpc_id = aws_vpc.vpc_main.id
+resource "aws_route_table" "default_vpc" {
+  vpc_id = aws_vpc.default.id
 }
 
-resource "aws_internet_gateway" "gw_vpc_main" {
-  vpc_id = aws_vpc.vpc_main.id
+resource "aws_internet_gateway" "default_vpc" {
+  vpc_id = aws_vpc.default.id
 }
 
-resource "aws_default_network_acl" "acl_vpc_main" {
-  default_network_acl_id = aws_vpc.vpc_main.default_network_acl_id
+resource "aws_default_network_acl" "default_vpc" {
+  default_network_acl_id = aws_vpc.default.default_network_acl_id
   subnet_ids = [
-    aws_subnet.sn_00_eu_central_1a_vpc_main.id,
-    aws_subnet.sn_01_eu_central_1b_vpc_main.id,
-    aws_subnet.sn_02_eu_central_1c_vpc_main.id
+    aws_subnet.sn_00_euc_1a_default_vpc.id,
+    aws_subnet.sn_01_euc_1b_default_vpc.id,
+    aws_subnet.sn_02_euc_1c_default_vpc.id
   ]
   egress {
     action     = "allow"
@@ -57,8 +57,8 @@ resource "aws_default_network_acl" "acl_vpc_main" {
   }
 }
 
-resource "aws_default_security_group" "sg" {
-  vpc_id      = aws_vpc.vpc_main.id
+resource "aws_default_security_group" "default_vpc" {
+  vpc_id      = aws_vpc.default.id
 
   ingress {
     from_port = 0

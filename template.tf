@@ -13,6 +13,21 @@ provider "aws" {
   region  = "eu-central-1"
 }
 
+locals {
+  WEBSERVICE = {
+    ENVIRONMENT = {
+      FG-TEST = "fg-test"
+    }
+    NAMES = {
+      EARTH_WS = "earthws"
+    }
+    SENTRY_ENVIRONMENT = "SENTRY_ENVIRONMENT"
+    SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE"
+    LOG_SENTRY_DSN = "log.sentry.dsn"
+    SPRING_DATASOURCE_PASSWORD = "SPRING_DATASOURCE_PASSWORD"
+  }
+}
+
 module "network_default" {
   source = "./modules/network/"
   vpc_cidr_block = var.vpc_cidr_block
@@ -21,78 +36,35 @@ module "network_default" {
   sn_02_cidr_block = var.sn_02_cidr_block
 }
 
-module "cert_alb" {
-  source = "./modules/cert/"
-  domain_name = "earthws.alb.casasky.de"
-  validation_method = "DNS"
-  tags = {
-    application = "earthws"
-  }
+module "webservice_earth" {
+  source            = "./modules/webservice/"
+  webservice_name   = local.WEBSERVICE.NAMES.EARTH_WS
+  default_vpc_id    = module.network_default.vpc_default_id
+  default_sg_id     = module.network_default.sg_default_id
+  subnet_ids        = module.network_default.subnet_ids
+  primary_zone_name = aws_route53_zone.primary.name
+  primary_zone_id   = aws_route53_zone.primary.id
+  environment = [{
+    name  = local.WEBSERVICE.SENTRY_ENVIRONMENT
+    value = local.WEBSERVICE.ENVIRONMENT.FG-TEST
+  }, {
+    name  = local.WEBSERVICE.SPRING_DATASOURCE_PASSWORD
+    value = var.SPRING_DATASOURCE_PASSWORD
+  }, {
+    name  = local.WEBSERVICE.SPRING_PROFILES_ACTIVE
+    value = local.WEBSERVICE.ENVIRONMENT.FG-TEST
+  }, {
+    name  = local.WEBSERVICE.LOG_SENTRY_DSN
+    value = var.LOG_SENTRY_DSN
+  }]
 }
 
-resource "aws_security_group" "sg_earthws_fg" {
-  vpc_id      = module.network_default.vpc_default_id
-  name        = "earthws-fg-sg"
-  description = "fargate sg"
-
-  ingress {
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "provisory (change to local net or fix ip)"
-    from_port        = 22
-    protocol         = "tcp"
-    to_port          = 22
-  }
-
-  ingress {
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "provisory (change to local net or fix ip)"
-    from_port        = 9090
-    protocol         = "tcp"
-    to_port          = 9090
-  }
-
-  egress {
-    cidr_blocks      = ["0.0.0.0/0"]
-    from_port        = 0
-    protocol         = "-1"
-    self             = false
-    to_port          = 0
-  }
+resource "aws_route53_zone" "primary" {
+  name    = var.primary_zone_name
+  comment = "HostedZone created by Route53 Registrar"
 }
 
-resource "aws_security_group" "sg_earthws_fg_alb" {
-  vpc_id      = module.network_default.vpc_default_id
-  name        = "earthws-fg-alb-sg"
-  description = "sg for alb"
-
-  ingress {
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    from_port        = 80
-    protocol         = "tcp"
-    to_port          = 80
-  }
-
-  ingress {
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    from_port        = 443
-    protocol         = "tcp"
-    to_port          = 443
-  }
-
-  egress {
-    cidr_blocks      = ["0.0.0.0/0"]
-    from_port        = 0
-    protocol         = "-1"
-    self             = false
-    to_port          = 0
-  }
-}
-
-resource "aws_security_group" "sg_template_rds" {
+resource "aws_security_group" "template_rds" {
   vpc_id      = module.network_default.vpc_default_id
   name        = "template-db-sg"
   description = "allow public psql"
@@ -113,49 +85,4 @@ resource "aws_security_group" "sg_template_rds" {
     self             = false
     to_port          = 5432
   }
-}
-
-resource "aws_lb" "alb_earthws_fg" {
-  name               = "earthws-fg-alb"
-  load_balancer_type = "application"
-  security_groups    = [module.network_default.sg_default_id, aws_security_group.sg_earthws_fg_alb.id]
-  subnets            = module.network_default.subnet_ids
-}
-
-resource "aws_lb_target_group" "target_group_alb_earthws_fg" {
-  name     = "earthws-fg-alb-tg"
-  port     = 80
-  protocol = "HTTP"
-  target_type = "ip"
-  vpc_id   = module.network_default.vpc_default_id
-}
-
-resource "aws_lb_listener" "listener_alb_earthws_fg" {
-  load_balancer_arn = aws_lb.alb_earthws_fg.arn
-  port              = "80"
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.target_group_alb_earthws_fg.arn
-  }
-}
-
-resource "aws_lb_listener" "ssl_listener_alb_earthws_fg" {
-  load_balancer_arn = aws_lb.alb_earthws_fg.arn
-  port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = module.cert_alb.arn
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.target_group_alb_earthws_fg.arn
-  }
-}
-
-# This resource is for additional certificates and does not replace the default certificate on the listener.
-resource "aws_lb_listener_certificate" "listener_cert_ssl" {
-  listener_arn    = aws_lb_listener.ssl_listener_alb_earthws_fg.arn
-  certificate_arn = module.cert_alb.arn
 }
