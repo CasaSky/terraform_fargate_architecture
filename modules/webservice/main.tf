@@ -1,3 +1,60 @@
+locals {
+  container_definitions = "[${jsonencode({
+    name             = var.webservice_name
+    image            = aws_ecr_repository.ecs.repository_url
+    cpu              = 0
+    essential        = local.essential
+    portMappings     = local.port_mappings
+    environment      = local.environment
+    logConfiguration = local.log_configuration
+    mountPoints      = []
+    volumesFrom      = []
+  })}]"
+
+  cpu = 256
+  memory = 512
+  essential = true
+
+  environment = [{
+    name  = "SENTRY_ENVIRONMENT"
+    value = local.WEBSERVICE.ENVIRONMENT.FG-TEST
+  }, {
+    name  = "SPRING_DATASOURCE_PASSWORD"
+    value = var.datasource_password
+  }, {
+    name  = "SPRING_PROFILES_ACTIVE"
+    value = local.WEBSERVICE.ENVIRONMENT.FG-TEST
+  }, {
+    name  = "log.sentry.dsn"
+    value = var.sentry_dsn
+  }]
+
+  port_mappings = [{
+    containerPort = 9090
+    hostPort = 9090
+    protocol = "tcp"
+  }]
+
+  log_configuration = {
+    logDriver = "awslogs",
+    options = {
+      awslogs-group         = format("/ecs/%s", local.family)
+      awslogs-region        = "eu-central-1"
+      awslogs-stream-prefix = "ecs"
+    }
+  }
+
+  family = format("%s-fg-task-def", var.webservice_name)
+}
+
+locals {
+  WEBSERVICE = {
+    ENVIRONMENT = {
+      FG-TEST = "fg-test"
+    }
+  }
+}
+
 module "alb_certificate" {
   source = "../../modules/cert/"
   domain_name = format("%s.alb.%s", var.webservice_name, var.primary_zone_name)
@@ -140,27 +197,13 @@ data "aws_iam_role" "ecsTaskExecutionRole" {
   name = "ecsTaskExecutionRole"
 }
 
-locals {
-  container_definitions = "[${jsonencode({
-    name             = var.webservice_name
-    image            = var.image
-    cpu              = 0
-    essential        = var.essential
-    portMappings     = var.port_mappings
-    environment      = var.environment
-    logConfiguration = var.log_configuration
-    mountPoints      = []
-    volumesFrom      = []
-  })}]"
-}
-
 resource "aws_ecs_task_definition" "ecs" {
-  family                = format("%s-fg-task-def", var.webservice_name)
+  family                = local.family
   container_definitions = local.container_definitions
-  cpu = var.cpu
-  memory = var.memory
+  cpu                   = local.cpu
+  memory                = local.memory
   requires_compatibilities = ["FARGATE"]
-  task_role_arn = aws_iam_role.task_definition.arn
+  task_role_arn      = aws_iam_role.task_definition.arn
   execution_role_arn = data.aws_iam_role.ecsTaskExecutionRole.arn
 }
 

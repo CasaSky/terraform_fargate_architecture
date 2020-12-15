@@ -37,26 +37,15 @@ module "network_default" {
 }
 
 module "webservice_earth" {
-  source            = "./modules/webservice/"
-  webservice_name   = local.WEBSERVICE.NAMES.EARTH_WS
-  default_vpc_id    = module.network_default.vpc_default_id
-  default_sg_id     = module.network_default.sg_default_id
-  subnet_ids        = module.network_default.subnet_ids
-  primary_zone_name = aws_route53_zone.primary.name
-  primary_zone_id   = aws_route53_zone.primary.id
-  environment = [{
-    name  = local.WEBSERVICE.SENTRY_ENVIRONMENT
-    value = local.WEBSERVICE.ENVIRONMENT.FG-TEST
-  }, {
-    name  = local.WEBSERVICE.SPRING_DATASOURCE_PASSWORD
-    value = var.SPRING_DATASOURCE_PASSWORD
-  }, {
-    name  = local.WEBSERVICE.SPRING_PROFILES_ACTIVE
-    value = local.WEBSERVICE.ENVIRONMENT.FG-TEST
-  }, {
-    name  = local.WEBSERVICE.LOG_SENTRY_DSN
-    value = var.LOG_SENTRY_DSN
-  }]
+  source              = "./modules/webservice/"
+  webservice_name     = local.WEBSERVICE.NAMES.EARTH_WS
+  default_vpc_id      = module.network_default.vpc_default_id
+  default_sg_id       = module.network_default.sg_default_id
+  subnet_ids          = module.network_default.subnet_ids
+  primary_zone_name   = aws_route53_zone.primary.name
+  primary_zone_id     = aws_route53_zone.primary.id
+  datasource_password = var.SPRING_DATASOURCE_PASSWORD
+  sentry_dsn          = var.LOG_SENTRY_DSN
 }
 
 resource "aws_route53_zone" "primary" {
