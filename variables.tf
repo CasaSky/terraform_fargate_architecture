@@ -25,3 +25,7 @@ variable "SPRING_DATASOURCE_PASSWORD" {
 variable "LOG_SENTRY_DSN" {
   description = "TF_VARIABLE where the sentry dsn url is set"
 }
+
+variable "SPRING_PROFILES_ACTIVE" {
+  description = "TF_VARIABLE where the webservice datasource password is set"
+}

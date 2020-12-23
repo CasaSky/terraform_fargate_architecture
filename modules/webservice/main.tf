@@ -55,6 +55,10 @@ locals {
   }
 }
 
+locals {
+  www_cidr_block = "0.0.0.0/0"
+}
+
 module "alb_certificate" {
   source = "../../modules/cert/"
   domain_name = format("%s.alb.%s", var.webservice_name, var.primary_zone_name)
@@ -72,20 +76,10 @@ resource "aws_security_group" "service" {
 
   ingress {
     cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
     description      = "provisory (change to local net or fix ip)"
     from_port        = 22
     protocol         = "tcp"
     to_port          = 22
-  }
-
-  ingress {
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "provisory (change to local net or fix ip)"
-    from_port        = 9090
-    protocol         = "tcp"
-    to_port          = 9090
   }
 
   egress {
@@ -103,23 +97,21 @@ resource "aws_security_group" "alb" {
   description = "sg for alb"
 
   ingress {
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    cidr_blocks      = [local.www_cidr_block]
     from_port        = 80
     protocol         = "tcp"
     to_port          = 80
   }
 
   ingress {
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    cidr_blocks      = [local.www_cidr_block]
     from_port        = 443
     protocol         = "tcp"
     to_port          = 443
   }
 
   egress {
-    cidr_blocks      = ["0.0.0.0/0"]
+    cidr_blocks      = [local.www_cidr_block]
     from_port        = 0
     protocol         = "-1"
     self             = false

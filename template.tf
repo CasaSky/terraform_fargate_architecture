@@ -36,6 +36,13 @@ module "network_default" {
   sn_02_cidr_block = var.sn_02_cidr_block
 }
 
+module "template_db" {
+  source = "./modules/postgres/"
+  db_instance_identifier = "template-db"
+  default_vpc_id         = module.network_default.vpc_default_id
+  default_sg_id          = module.network_default.sg_default_id
+}
+
 module "webservice_earth" {
   source              = "./modules/webservice/"
   webservice_name     = local.WEBSERVICE.NAMES.EARTH_WS
@@ -51,27 +58,4 @@ module "webservice_earth" {
 resource "aws_route53_zone" "primary" {
   name    = var.primary_zone_name
   comment = "HostedZone created by Route53 Registrar"
-}
-
-resource "aws_security_group" "template_rds" {
-  vpc_id      = module.network_default.vpc_default_id
-  name        = "template-db-sg"
-  description = "allow public psql"
-
-  ingress {
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    from_port        = 5432
-    protocol         = "tcp"
-    to_port          = 5432
-  }
-
-  egress {
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    from_port        = 5432
-    protocol         = "tcp"
-    self             = false
-    to_port          = 5432
-  }
 }

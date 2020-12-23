@@ -9,6 +9,8 @@ terraform import module.network_default.aws_route_table.default_vpc rtb-484a7c22
 terraform import module.network_default.aws_internet_gateway.default_vpc igw-33f14258
 terraform import module.network_default.aws_default_network_acl.default_vpc acl-e2206988
 terraform import module.network_default.aws_default_security_group.default_vpc sg-ef151793
+terraform import module.template_db.aws_security_group.template_rds sg-02bf3d259793d9b1b
+terraform import module.template_db.aws_db_instance.postgres template-db
 terraform import module.webservice_earth.module.alb_certificate.aws_acm_certificate.cert arn:aws:acm:eu-central-1:182355820400:certificate/a2bc7f64-03a5-42d0-a021-da8210850018
 terraform import module.webservice_earth.aws_security_group.service sg-09bb7a7fc282dd76a
 terraform import module.webservice_earth.aws_security_group.alb sg-03720024b8a3410d0
@@ -22,5 +24,4 @@ terraform import module.webservice_earth.aws_ecr_repository.ecs earthws
 terraform import module.webservice_earth.aws_ecs_cluster.ecs earthws-fg-cluster
 terraform import module.webservice_earth.aws_ecs_service.ecs earthws-fg-cluster/earthws-fg-service
 terraform import aws_route53_zone.primary Z01653637OSY7TQPY7UK
-terraform import aws_security_group.template_rds sg-02bf3d259793d9b1b
 ```
