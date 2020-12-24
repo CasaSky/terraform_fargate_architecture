@@ -5,8 +5,8 @@ locals {
 resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr_block
   # todo check this configuration - this is added due to publicly wanted access of rds
-  enable_dns_hostnames = true
-  enable_dns_support = true
+  #enable_dns_hostnames = true
+  #enable_dns_support = true
 
   tags = {
     Name = "main-vpc"
@@ -42,6 +42,7 @@ resource "aws_default_security_group" "main_vpc" {
 resource "aws_subnet" "sn_00_euc_1a" {
   vpc_id = aws_vpc.main.id
   cidr_block = var.sn_00_cidr_block
+  availability_zone_id = "eu-central-1a"
 
   tags = {
     Name = "sn-00-euc-1a"
@@ -51,6 +52,7 @@ resource "aws_subnet" "sn_00_euc_1a" {
 resource "aws_subnet" "sn_01_euc_1b" {
   vpc_id = aws_vpc.main.id
   cidr_block = var.sn_01_cidr_block
+  availability_zone_id = "eu-central-1b"
 
   tags = {
     Name = "sn-01-euc-1b"
@@ -60,6 +62,7 @@ resource "aws_subnet" "sn_01_euc_1b" {
 resource "aws_subnet" "sn_02_euc_1c" {
   vpc_id = aws_vpc.main.id
   cidr_block = var.sn_02_cidr_block
+  availability_zone_id = "eu-central-1c"
 
   tags = {
     Name = "sn-02-euc-1c"
