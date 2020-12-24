@@ -35,7 +35,6 @@ resource "aws_db_instance" "postgres" {
   max_allocated_storage  = 1000
   username               = "postgres"
   password               = var.password
-  storage_encrypted      = true
   vpc_security_group_ids = [aws_security_group.postgres.id, var.default_sg_id]
   db_subnet_group_name = aws_db_subnet_group.postgres.name
   iam_database_authentication_enabled = true
