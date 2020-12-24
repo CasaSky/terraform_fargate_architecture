@@ -28,13 +28,13 @@ variable "sn_02_cidr_block" {
 }
 
 variable "SPRING_DATASOURCE_PASSWORD" {
-  description = "TF_VARIABLE where the webservice datasource password is set"
+  description = "Sensitive TF_VARIABLE where the webservice datasource password is set"
 }
 
 variable "LOG_SENTRY_DSN" {
-  description = "TF_VARIABLE where the sentry dsn url is set"
+  description = "Sensitive TF_VARIABLE where the sentry dsn url is set"
 }
 
 variable "SPRING_PROFILES_ACTIVE" {
-  description = "TF_VARIABLE where the webservice datasource password is set"
+  description = "TF_VARIABLE for the spring profile"
 }
