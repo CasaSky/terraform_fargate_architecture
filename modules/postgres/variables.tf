@@ -12,3 +12,7 @@ variable "default_sg_id" {
   description = "The default sg id of the network"
   type = string
 }
+
+variable "password" {
+  type = string
+}

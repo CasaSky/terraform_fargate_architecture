@@ -36,6 +36,7 @@ module "network_default" {
 module "template_db" {
   source = "./modules/postgres/"
   db_instance_identifier = "template-db"
+  password               = var.SPRING_DATASOURCE_PASSWORD
   default_vpc_id         = module.network_default.vpc_default_id
   default_sg_id          = module.network_default.sg_default_id
 }

@@ -30,6 +30,7 @@ resource "aws_db_instance" "postgres" {
   instance_class         = "db.t2.micro"
   max_allocated_storage  = 1000
   username               = "postgres"
+  password               = var.password
   vpc_security_group_ids = [aws_security_group.template_rds.id, var.default_sg_id]
   iam_database_authentication_enabled = true
   copy_tags_to_snapshot = true
