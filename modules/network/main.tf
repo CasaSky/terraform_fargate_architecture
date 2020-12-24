@@ -42,7 +42,7 @@ resource "aws_default_security_group" "main_vpc" {
 resource "aws_subnet" "sn_00_euc_1a" {
   vpc_id = aws_vpc.main.id
   cidr_block = var.sn_00_cidr_block
-  availability_zone_id = "eu-central-1a"
+  availability_zone = "eu-central-1a"
 
   tags = {
     Name = "sn-00-euc-1a"
@@ -52,7 +52,7 @@ resource "aws_subnet" "sn_00_euc_1a" {
 resource "aws_subnet" "sn_01_euc_1b" {
   vpc_id = aws_vpc.main.id
   cidr_block = var.sn_01_cidr_block
-  availability_zone_id = "eu-central-1b"
+  availability_zone = "eu-central-1b"
 
   tags = {
     Name = "sn-01-euc-1b"
@@ -62,7 +62,7 @@ resource "aws_subnet" "sn_01_euc_1b" {
 resource "aws_subnet" "sn_02_euc_1c" {
   vpc_id = aws_vpc.main.id
   cidr_block = var.sn_02_cidr_block
-  availability_zone_id = "eu-central-1c"
+  availability_zone = "eu-central-1c"
 
   tags = {
     Name = "sn-02-euc-1c"
