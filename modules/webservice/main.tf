@@ -217,6 +217,7 @@ resource "aws_ecs_service" "ecs" {
   desired_count   = 1
   depends_on      = [data.aws_iam_role.ecsTaskExecutionRole]
   enable_ecs_managed_tags = true
+  launch_type = "FARGATE"
 
   load_balancer {
     target_group_arn = aws_lb_target_group.alb.arn
