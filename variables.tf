@@ -1,8 +1,13 @@
 variable "webservice_names" {
   type = map(string)
   default = {
-    earthws = "earthws"
+    devtc = "devtc"
   }
+}
+
+variable "db_name" {
+  type = string
+  default = "devtc"
 }
 
 variable "primary_zone_name" {

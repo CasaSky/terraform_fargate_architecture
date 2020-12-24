@@ -13,6 +13,11 @@ variable "default_sg_id" {
   type = string
 }
 
+variable "default_network_subnet_ids" {
+  description = "The subnet ids of the default network"
+  type = list(string)
+}
+
 variable "password" {
   type = string
 }

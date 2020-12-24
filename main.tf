@@ -35,10 +35,11 @@ module "network_default" {
 
 module "main_db" {
   source = "./modules/postgres/"
-  db_instance_identifier = "main-db"
+  db_instance_identifier = var.db_name
   password               = var.SPRING_DATASOURCE_PASSWORD
   vpc_id                 = module.network_default.vpc_main_id
   default_sg_id          = module.network_default.sg_default_id
+  default_network_subnet_ids = module.network_default.subnet_ids
 }
 
 module "webservice" {

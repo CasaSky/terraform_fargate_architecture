@@ -32,9 +32,16 @@ resource "aws_db_instance" "postgres" {
   username               = "postgres"
   password               = var.password
   vpc_security_group_ids = [aws_security_group.template_rds.id, var.default_sg_id]
+  db_subnet_group_name = aws_db_subnet_group.postgres.name
   iam_database_authentication_enabled = true
   copy_tags_to_snapshot = true
   performance_insights_enabled = true
   publicly_accessible = true
   skip_final_snapshot = true
+}
+
+resource "aws_db_subnet_group" "postgres" {
+  name        = format("%s-sb-subnet-group", var.db_instance_identifier)
+  description = "default network"
+  subnet_ids  = [ var.default_network_subnet_ids[0] ]
 }
