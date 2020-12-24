@@ -13,8 +13,16 @@ resource "aws_vpc" "main" {
   }
 }
 
-resource "aws_route_table" "main_vpc" {
-  vpc_id = aws_vpc.main.id
+resource "aws_default_route_table" "main_vpc" {
+  default_route_table_id = aws_vpc.main.default_route_table_id
+
+  route {
+    # ... todo
+  }
+
+  tags = {
+    Name = "default route table of the main vpc"
+  }
 }
 
 resource "aws_internet_gateway" "main_vpc" {
