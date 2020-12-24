@@ -1,5 +1,5 @@
 resource "aws_security_group" "template_rds" {
-  vpc_id      = var.default_vpc_id
+  vpc_id      = var.vpc_id
   name        = format("%s-sg", var.db_instance_identifier)
   description = "allow public psql"
 

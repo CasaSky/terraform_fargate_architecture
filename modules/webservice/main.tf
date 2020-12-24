@@ -70,7 +70,7 @@ module "alb_certificate" {
 }
 
 resource "aws_security_group" "service" {
-  vpc_id      = var.default_vpc_id
+  vpc_id      = var.vpc_id
   name        = format("%s-fg-sg", var.webservice_name)
   description = "fargate sg"
 
@@ -92,7 +92,7 @@ resource "aws_security_group" "service" {
 }
 
 resource "aws_security_group" "alb" {
-  vpc_id      = var.default_vpc_id
+  vpc_id      = var.vpc_id
   name        = format("%s-fg-alb-sg", var.webservice_name)
   description = "sg for alb"
 
@@ -131,7 +131,7 @@ resource "aws_lb_target_group" "alb" {
   port     = 80
   protocol = "HTTP"
   target_type = "ip"
-  vpc_id   = var.default_vpc_id
+  vpc_id   = var.vpc_id
 }
 
 resource "aws_lb_listener" "alb" {
