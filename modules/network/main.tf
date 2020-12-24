@@ -17,7 +17,8 @@ resource "aws_default_route_table" "main_vpc" {
   default_route_table_id = aws_vpc.main.default_route_table_id
 
   route {
-    # ... todo
+    cidr_block = local.www_cidr_block
+    gateway_id = aws_internet_gateway.main_vpc.id
   }
 
   tags = {
