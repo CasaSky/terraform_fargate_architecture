@@ -15,19 +15,8 @@ locals {
   memory = 512
   essential = true
 
-  environment = [{
-    name  = "SENTRY_ENVIRONMENT"
-    value = local.WEBSERVICE.ENVIRONMENT.FG-TEST
-  }, {
-    name  = "SPRING_DATASOURCE_PASSWORD"
-    value = var.datasource_password
-  }, {
-    name  = "SPRING_PROFILES_ACTIVE"
-    value = local.WEBSERVICE.ENVIRONMENT.FG-TEST
-  }, {
-    name  = "log.sentry.dsn"
-    value = var.sentry_dsn
-  }]
+  # todo figure out a way to manage multiple environments (test, prod)
+  environment = []
 
   port_mappings = [{
     containerPort = 9090
@@ -45,14 +34,6 @@ locals {
   }
 
   family = format("%s-fg-task-def", var.webservice_name)
-}
-
-locals {
-  WEBSERVICE = {
-    ENVIRONMENT = {
-      FG-TEST = "fg-test"
-    }
-  }
 }
 
 locals {

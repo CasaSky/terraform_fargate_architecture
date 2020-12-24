@@ -36,7 +36,7 @@ module "network_default" {
 module "main_db" {
   source = "./modules/postgres/"
   db_instance_identifier = var.db_name
-  password               = var.SPRING_DATASOURCE_PASSWORD
+  password               = var.DATABASE_PASSWORD
   vpc_id                 = module.network_default.vpc_main_id
   default_sg_id          = module.network_default.sg_default_id
   default_network_subnet_ids = module.network_default.subnet_ids
@@ -51,8 +51,6 @@ module "webservice" {
   subnet_ids          = module.network_default.subnet_ids
   primary_zone_name   = data.aws_route53_zone.primary.name
   primary_zone_id     = data.aws_route53_zone.primary.id
-  datasource_password = var.SPRING_DATASOURCE_PASSWORD
-  sentry_dsn          = var.LOG_SENTRY_DSN
 }
 
 data "aws_route53_zone" "primary" {

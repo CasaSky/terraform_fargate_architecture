@@ -27,11 +27,3 @@ variable "subnet_ids" {
   type = list(string)
   description = "(Required) The subnets associated with the task or service"
 }
-
-variable "datasource_password" {
-  description = "The webservice datasource password"
-}
-
-variable "sentry_dsn" {
-  description = "The sentry dsn url"
-}

@@ -32,14 +32,6 @@ variable "sn_02_cidr_block" {
   default = "172.31.0.0/20"
 }
 
-variable "SPRING_DATASOURCE_PASSWORD" {
-  description = "Sensitive TF_VARIABLE where the webservice datasource password is set"
-}
-
-variable "LOG_SENTRY_DSN" {
-  description = "Sensitive TF_VARIABLE where the sentry dsn url is set"
-}
-
-variable "SPRING_PROFILES_ACTIVE" {
-  description = "TF_VARIABLE for the spring profile"
+variable "DATABASE_PASSWORD" {
+  description = "Sensitive TF_VARIABLE for reading the database password that has to be set during postgres creation"
 }
