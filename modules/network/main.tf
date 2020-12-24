@@ -2,18 +2,42 @@ locals {
   www_cidr_block = "0.0.0.0/0"
 }
 
-# replace with a not default vpc todo
-# This will create a unique vpc. So if this vpc is already existing in aws, it will not be created a second time.
-resource "aws_vpc" "default" {
+resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr_block
 
   tags = {
-    Name = "default-vpc"
+    Name = "main-vpc"
   }
 }
 
-resource "aws_subnet" "sn_00_euc_1a_default_vpc" {
-  vpc_id = aws_vpc.default.id
+resource "aws_route_table" "main_vpc" {
+  vpc_id = aws_vpc.main.id
+}
+
+resource "aws_internet_gateway" "main_vpc" {
+  vpc_id = aws_vpc.main.id
+}
+
+resource "aws_default_security_group" "main_vpc" {
+  vpc_id      = aws_vpc.main.id
+
+  egress {
+    cidr_blocks      = [local.www_cidr_block]
+    from_port        = 0
+    protocol         = "-1"
+    to_port          = 0
+  }
+
+  ingress {
+    from_port        = 0
+    protocol         = "-1"
+    to_port          = 0
+    self             = true
+  }
+}
+
+resource "aws_subnet" "sn_00_euc_1a" {
+  vpc_id = aws_vpc.main.id
   cidr_block = var.sn_00_cidr_block
 
   tags = {
@@ -21,8 +45,8 @@ resource "aws_subnet" "sn_00_euc_1a_default_vpc" {
   }
 }
 
-resource "aws_subnet" "sn_01_euc_1b_default_vpc" {
-  vpc_id = aws_vpc.default.id
+resource "aws_subnet" "sn_01_euc_1b" {
+  vpc_id = aws_vpc.main.id
   cidr_block = var.sn_01_cidr_block
 
   tags = {
@@ -30,8 +54,8 @@ resource "aws_subnet" "sn_01_euc_1b_default_vpc" {
   }
 }
 
-resource "aws_subnet" "sn_02_euc_1c_default_vpc" {
-  vpc_id = aws_vpc.default.id
+resource "aws_subnet" "sn_02_euc_1c" {
+  vpc_id = aws_vpc.main.id
   cidr_block = var.sn_02_cidr_block
 
   tags = {
@@ -39,22 +63,12 @@ resource "aws_subnet" "sn_02_euc_1c_default_vpc" {
   }
 }
 
-# replace with a not default vpc todo
-# This will create a unique route table. So if the corresponding vpc is already existing in aws, this resource will not be created a second time.
-resource "aws_route_table" "default_vpc" {
-  vpc_id = aws_vpc.default.id
-}
-
-resource "aws_internet_gateway" "default_vpc" {
-  vpc_id = aws_vpc.default.id
-}
-
-resource "aws_default_network_acl" "default_vpc" {
-  default_network_acl_id = aws_vpc.default.default_network_acl_id
+resource "aws_default_network_acl" "main_network" {
+  default_network_acl_id = aws_vpc.main.default_network_acl_id
   subnet_ids = [
-    aws_subnet.sn_00_euc_1a_default_vpc.id,
-    aws_subnet.sn_01_euc_1b_default_vpc.id,
-    aws_subnet.sn_02_euc_1c_default_vpc.id
+    aws_subnet.sn_00_euc_1a.id,
+    aws_subnet.sn_01_euc_1b.id,
+    aws_subnet.sn_02_euc_1c.id
   ]
 
   egress {
@@ -68,7 +82,7 @@ resource "aws_default_network_acl" "default_vpc" {
 
   ingress {
     action     = "allow"
-    cidr_block = aws_vpc.default.cidr_block
+    cidr_block = aws_vpc.main.cidr_block
     from_port  = 0
     protocol   = "-1"
     rule_no    = 100
@@ -100,23 +114,5 @@ resource "aws_default_network_acl" "default_vpc" {
     protocol         = "tcp"
     rule_no          = 400
     to_port          = 443
-  }
-}
-
-resource "aws_default_security_group" "default_vpc" {
-  vpc_id      = aws_vpc.default.id
-
-  egress {
-    cidr_blocks      = [local.www_cidr_block]
-    from_port        = 0
-    protocol         = "-1"
-    to_port          = 0
-  }
-
-  ingress {
-    from_port        = 0
-    protocol         = "-1"
-    to_port          = 0
-    self             = true
   }
 }

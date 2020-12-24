@@ -3,8 +3,8 @@ variable "db_instance_identifier" {
   type = string
 }
 
-variable "default_vpc_id" {
-  description = "The default vpc id of the network"
+variable "vpc_id" {
+  description = "The vpc id of the network"
   type = string
 }
 

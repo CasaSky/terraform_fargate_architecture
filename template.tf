@@ -37,7 +37,7 @@ module "template_db" {
   source = "./modules/postgres/"
   db_instance_identifier = "template-db"
   password               = var.SPRING_DATASOURCE_PASSWORD
-  default_vpc_id         = module.network_default.vpc_default_id
+  vpc_id                 = module.network_default.vpc_main_id
   default_sg_id          = module.network_default.sg_default_id
 }
 
@@ -45,7 +45,7 @@ module "webservice" {
   source              = "./modules/webservice/"
   for_each            = var.webservice_names
   webservice_name     = each.value
-  default_vpc_id      = module.network_default.vpc_default_id
+  vpc_id              = module.network_default.vpc_main_id
   default_sg_id       = module.network_default.sg_default_id
   subnet_ids          = module.network_default.subnet_ids
   primary_zone_name   = data.aws_route53_zone.primary.name

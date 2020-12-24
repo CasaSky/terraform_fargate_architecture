@@ -13,10 +13,11 @@ variable "primary_zone_id" {
   description = "(Required) The id of the primary hosted zone"
 }
 
-variable "default_vpc_id" {
+variable "vpc_id" {
   type = string
-  description = "(Required) The default vpc id associated with the load balancer"
+  description = "(Required) The id of the vpc associated with the load balancer"
 }
+
 variable "default_sg_id" {
   type = string
   description = "(Required) The default security group for the vpc associated with the service"
