@@ -35,7 +35,7 @@ module "network_default" {
 
 module "main_db" {
   source = "./modules/postgres/"
-  db_instance_identifier = var.db_name
+  db_instance_identifier = var.db_instance_identifier
   password               = var.DATABASE_PASSWORD
   vpc_id                 = module.network_default.vpc_main_id
   default_sg_id          = module.network_default.sg_default_id

@@ -5,7 +5,7 @@ variable "webservice_names" {
   }
 }
 
-variable "db_name" {
+variable "db_instance_identifier" {
   type = string
   default = "devtc-db"
 }
