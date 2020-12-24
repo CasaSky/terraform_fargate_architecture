@@ -5,8 +5,8 @@ locals {
 resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr_block
   # todo check this configuration - this is added due to publicly wanted access of rds
-  #enable_dns_hostnames = true
-  #enable_dns_support = true
+  enable_dns_hostnames = true
+  enable_dns_support = true
 
   tags = {
     Name = "main-vpc"
