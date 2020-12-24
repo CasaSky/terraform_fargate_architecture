@@ -4,7 +4,7 @@ terraform {
     organization = "casasky" # change to your specific organization name
 
     workspaces {
-      name = "fargate_architecture" # change to your specific project name
+      name = "terraform_fargate_architecture" # change to your specific project name
     }
   }
 }
