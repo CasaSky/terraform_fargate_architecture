@@ -5,7 +5,6 @@ resource "aws_security_group" "postgres" {
 
   ingress {
     cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
     from_port        = 5432
     protocol         = "tcp"
     to_port          = 5432
@@ -13,7 +12,6 @@ resource "aws_security_group" "postgres" {
 
   egress {
     cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
     from_port        = 5432
     protocol         = "tcp"
     self             = false

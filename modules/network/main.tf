@@ -113,6 +113,7 @@ resource "aws_default_network_acl" "main_network" {
     to_port          = 60999
   }
 
+  # todo probably i want to define this rule in webservice module
   ingress {
     action           = "allow"
     cidr_block       = local.www_cidr_block
@@ -122,6 +123,7 @@ resource "aws_default_network_acl" "main_network" {
     to_port          = 80
   }
 
+  # todo probably i want to define this rule in webservice module
   ingress {
     action           = "allow"
     cidr_block       = local.www_cidr_block
@@ -129,5 +131,15 @@ resource "aws_default_network_acl" "main_network" {
     protocol         = "tcp"
     rule_no          = 400
     to_port          = 443
+  }
+
+  # todo probably i want to define this rule in postgres module
+  ingress {
+    action           = "allow"
+    cidr_block       = local.www_cidr_block
+    from_port        = 5432
+    protocol         = "tcp"
+    rule_no          = 500
+    to_port          = 5432
   }
 }
