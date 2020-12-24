@@ -2,25 +2,45 @@ locals {
   www_cidr_block = "0.0.0.0/0"
 }
 
+# replace with a not default vpc todo
+# This will create a unique vpc. So if this vpc is already existing in aws, it will not be created a second time.
 resource "aws_vpc" "default" {
   cidr_block = var.vpc_cidr_block
+
+  tags = {
+    Name = "default-vpc"
+  }
 }
 
 resource "aws_subnet" "sn_00_euc_1a_default_vpc" {
   vpc_id = aws_vpc.default.id
   cidr_block = var.sn_00_cidr_block
+
+  tags = {
+    Name = "sn-00-euc-1a"
+  }
 }
 
 resource "aws_subnet" "sn_01_euc_1b_default_vpc" {
   vpc_id = aws_vpc.default.id
   cidr_block = var.sn_01_cidr_block
+
+  tags = {
+    Name = "sn-01-euc-1b"
+  }
 }
 
 resource "aws_subnet" "sn_02_euc_1c_default_vpc" {
   vpc_id = aws_vpc.default.id
   cidr_block = var.sn_02_cidr_block
+
+  tags = {
+    Name = "sn-02-euc-1c"
+  }
 }
 
+# replace with a not default vpc todo
+# This will create a unique route table. So if the corresponding vpc is already existing in aws, this resource will not be created a second time.
 resource "aws_route_table" "default_vpc" {
   vpc_id = aws_vpc.default.id
 }

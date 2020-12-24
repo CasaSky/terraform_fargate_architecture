@@ -1,5 +1,14 @@
+variable "webservice_names" {
+  type = map(string)
+  default = {
+    earthws = "earthws"
+  }
+}
+
 variable "primary_zone_name" {
-  default = "casasky.de"
+  type        = string
+  description = "The name of your primary zone. All resources will be addressed via this hosted zone."
+  default     = "casasky.de"
 }
 
 variable "vpc_cidr_block" {

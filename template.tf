@@ -1,10 +1,10 @@
 terraform {
   backend "remote" {
     hostname = "app.terraform.io"
-    organization = "casasky"
+    organization = "casasky" # change to your specific organization name
 
     workspaces {
-      name = "template_project"
+      name = "template_project" # change to your specific project name
     }
   }
 }
@@ -17,9 +17,6 @@ locals {
   WEBSERVICE = {
     ENVIRONMENT = {
       FG-TEST = "fg-test"
-    }
-    NAMES = {
-      EARTH_WS = "earthws"
     }
     SENTRY_ENVIRONMENT = "SENTRY_ENVIRONMENT"
     SPRING_PROFILES_ACTIVE = "SPRING_PROFILES_ACTIVE"
@@ -43,19 +40,19 @@ module "template_db" {
   default_sg_id          = module.network_default.sg_default_id
 }
 
-module "webservice_earth" {
+module "webservice" {
   source              = "./modules/webservice/"
-  webservice_name     = local.WEBSERVICE.NAMES.EARTH_WS
+  for_each            = var.webservice_names
+  webservice_name     = each.value
   default_vpc_id      = module.network_default.vpc_default_id
   default_sg_id       = module.network_default.sg_default_id
   subnet_ids          = module.network_default.subnet_ids
-  primary_zone_name   = aws_route53_zone.primary.name
-  primary_zone_id     = aws_route53_zone.primary.id
+  primary_zone_name   = data.aws_route53_zone.primary.name
+  primary_zone_id     = data.aws_route53_zone.primary.id
   datasource_password = var.SPRING_DATASOURCE_PASSWORD
   sentry_dsn          = var.LOG_SENTRY_DSN
 }
 
-resource "aws_route53_zone" "primary" {
-  name    = var.primary_zone_name
-  comment = "HostedZone created by Route53 Registrar"
+data "aws_route53_zone" "primary" {
+  name = var.primary_zone_name
 }

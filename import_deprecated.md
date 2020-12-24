@@ -23,5 +23,4 @@ terraform import module.webservice_earth.aws_ecs_task_definition.ecs arn:aws:ecs
 terraform import module.webservice_earth.aws_ecr_repository.ecs earthws
 terraform import module.webservice_earth.aws_ecs_cluster.ecs earthws-fg-cluster
 terraform import module.webservice_earth.aws_ecs_service.ecs earthws-fg-cluster/earthws-fg-service
-terraform import aws_route53_zone.primary Z01653637OSY7TQPY7UK
 ```
