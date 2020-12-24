@@ -7,7 +7,7 @@ variable "webservice_names" {
 
 variable "db_name" {
   type = string
-  default = "devtc-db"
+  default = "devtc_db"
 }
 
 variable "primary_zone_name" {
