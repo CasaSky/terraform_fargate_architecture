@@ -44,5 +44,5 @@ resource "aws_db_instance" "postgres" {
 resource "aws_db_subnet_group" "postgres" {
   name        = format("%s-sb-subnet-group", var.db_instance_identifier)
   description = "default network"
-  subnet_ids  = [ var.default_network_subnet_ids[0]]
+  subnet_ids  = var.default_network_subnet_ids
 }
