@@ -38,10 +38,11 @@ resource "aws_db_instance" "postgres" {
   performance_insights_enabled = true
   publicly_accessible = true
   skip_final_snapshot = true
+  multi_az = false
 }
 
 resource "aws_db_subnet_group" "postgres" {
   name        = format("%s-sb-subnet-group", var.db_instance_identifier)
   description = "default network"
-  subnet_ids  = [ var.default_network_subnet_ids[0] ]
+  subnet_ids  = [ var.default_network_subnet_ids[0]]
 }
