@@ -4,7 +4,7 @@ terraform {
     organization = "casasky" # change to your specific organization name
 
     workspaces {
-      name = "template_project" # change to your specific project name
+      name = "fargate_architecture" # change to your specific project name
     }
   }
 }
@@ -33,9 +33,9 @@ module "network_default" {
   sn_02_cidr_block = var.sn_02_cidr_block
 }
 
-module "template_db" {
+module "main_db" {
   source = "./modules/postgres/"
-  db_instance_identifier = "template-db"
+  db_instance_identifier = "main-db"
   password               = var.SPRING_DATASOURCE_PASSWORD
   vpc_id                 = module.network_default.vpc_main_id
   default_sg_id          = module.network_default.sg_default_id
