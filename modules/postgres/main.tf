@@ -1,4 +1,4 @@
-resource "aws_security_group" "template_rds" {
+resource "aws_security_group" "postgres" {
   vpc_id      = var.vpc_id
   name        = format("%s-sg", var.db_instance_identifier)
   description = "allow public psql"
@@ -19,6 +19,10 @@ resource "aws_security_group" "template_rds" {
     self             = false
     to_port          = 5432
   }
+
+  tags = {
+    NAME = "postgres"
+  }
 }
 
 resource "aws_db_instance" "postgres" {
@@ -31,7 +35,8 @@ resource "aws_db_instance" "postgres" {
   max_allocated_storage  = 1000
   username               = "postgres"
   password               = var.password
-  vpc_security_group_ids = [aws_security_group.template_rds.id, var.default_sg_id]
+  storage_encrypted      = true
+  vpc_security_group_ids = [aws_security_group.postgres.id, var.default_sg_id]
   db_subnet_group_name = aws_db_subnet_group.postgres.name
   iam_database_authentication_enabled = true
   copy_tags_to_snapshot = true
@@ -39,10 +44,18 @@ resource "aws_db_instance" "postgres" {
   publicly_accessible = true
   skip_final_snapshot = true
   multi_az = false
+
+  tags = {
+    Name = "postgres"
+  }
 }
 
 resource "aws_db_subnet_group" "postgres" {
   name        = format("%s-sb-subnet-group", var.db_instance_identifier)
   description = "default network"
   subnet_ids  = var.default_network_subnet_ids
+
+  tags = {
+    NAME = "postgres"
+  }
 }
