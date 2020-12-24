@@ -189,6 +189,11 @@ resource "aws_ecr_repository" "ecs" {
 resource "aws_ecs_cluster" "ecs" {
   name = format("%s-fg-cluster", var.webservice_name)
   capacity_providers = ["FARGATE", "FARGATE_SPOT"]
+
+  setting {
+    name = "containerInsights"
+    value = "enabled"
+  }
 }
 
 resource "aws_ecs_service" "ecs" {
