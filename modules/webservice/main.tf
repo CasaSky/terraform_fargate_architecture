@@ -225,3 +225,15 @@ resource "aws_cloudwatch_log_group" "ecs" {
     Name = var.webservice_name
   }
 }
+
+resource "aws_route53_record" "alb" {
+  zone_id = var.primary_zone_id
+  name    = format("%s.alb", var.webservice_name)
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.service.dns_name
+    zone_id                = aws_lb.service.zone_id
+    evaluate_target_health = true
+  }
+}
