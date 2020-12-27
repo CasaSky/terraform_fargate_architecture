@@ -217,3 +217,11 @@ resource "aws_ecs_service" "ecs" {
     subnets = [var.subnet_ids[0]]
   }
 }
+
+resource "aws_cloudwatch_log_group" "ecs" {
+  name = format("/ecs/%s", aws_ecs_task_definition.ecs.id)
+
+  tags = {
+    Name = var.webservice_name
+  }
+}
